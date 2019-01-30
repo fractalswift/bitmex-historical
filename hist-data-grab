@@ -1,0 +1,110 @@
+#How to use: bitmex rate limit for public is 150/req per 5 min. There for, must edit the dates so no more than 148 req
+# and then run it every 5 min. Then save to seperate csv, then call the seperate csvs in another notebook and merge
+# them
+
+
+# Import required modules
+
+import requests
+import pandas as pd
+import numpy as np
+
+from datetime import date, datetime, timedelta
+
+
+# Gets the df for the first hour, as pd doesn't like merging an empty df
+
+parameters = {"binSize": '1m', "partial": False, 'symbol': 'XBTUSD', 'count': 750, 'reverse': 'false', 'startTime': '2018-11-11 00:00:00', 'endTime': '2018-11-11 01:00:00'}
+
+first_hour_of_minutes = requests.get("https://www.bitmex.com/api/v1/trade/bucketed", params=parameters)
+
+first_hour_df = pd.read_json(first_hour_of_minutes.content)
+
+first_hour_clean_df = first_hour_df[['timestamp','open', 'high', 'low', 'close']]
+
+first_hour_clean_df.head()
+
+
+# Generate a list of lists of hours which has starttime and endtime//
+
+def perdelta(start, end, delta):
+    curr = start
+    while curr <= end:
+        yield curr
+        curr += delta
+
+dtfmt = '%Y-%m-%d %H:%M:%S'
+
+a = '2018-11-11 00:00:00'
+b = '2018-11-29 00:00:00'
+
+start = datetime.strptime(a,dtfmt)
+end = datetime.strptime(b,dtfmt)
+
+stack=[]
+for result in perdelta(start , end, timedelta(seconds=43200)):    # formerly 3600 - 43200 is half a day (rate limit is 750 so this allows about half a day)
+    stack.append(str(result))
+
+stack1 = stack
+stack2 = stack[1:]
+
+
+hours_list = []
+
+for x, y in zip(stack1, stack2):
+    hour = [x, y]
+    hours_list.append(hour)
+    
+len(hours_list) # Check its not more than 150 long, as this is bitmex api limit per 5 mins
+
+# Make the first hour manually cos it makes the merging work, it doens't like merging a blank df
+
+minutes_list = first_hour_clean_df   
+
+
+# Iterate through the hours list and get all the data for each one
+
+
+for hour in hours_list:
+    startTime = hour[0]
+    endTime = hour[1]
+    
+    parameters = {"binSize": '1m', "partial": False, 'symbol': 'XBTUSD', 'count': 750, 'reverse': 'false', 'startTime': startTime, 'endTime': endTime}
+
+    minute_data = requests.get("https://www.bitmex.com/api/v1/trade/bucketed", params=parameters)
+    
+    minute_df = pd.read_json(minute_data.content)
+    
+    minute_clean = minute_df[['timestamp','open', 'high', 'low', 'close']]
+    
+    minutes_list = minutes_list.merge(minute_clean, how='outer')
+    
+
+# Check it worked
+    
+minutes_list.info()   
+minutes_list.head()
+    
+
+# Export it to a csv and read it back in again, this fixes the timestamp problem when merging for some reason
+
+minutes_list.to_csv('most_recent_minutes', encoding='utf-8', index=False)
+
+new_minutes = pd.read_csv('most_recent_minutes')
+
+
+# Import the old csv  - MAKE SURE IT IS MOST RECENT FILE NAME
+
+original_df = pd.read_csv('2018_full_1m')
+
+
+# Merge the new one into the big old one
+
+up_to_date_df = original_df.merge(new_minutes, how='outer')
+
+
+# Export it to a csv for use in other notebooks
+
+up_to_date_df.to_csv('2018_1m_nov29', encoding='utf-8', index=False)
+
+    
