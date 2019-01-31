@@ -5,13 +5,13 @@ Scroll down for current features and usage instructions
 
 Future versions to include:
   
-  Make a pip install version
+    Make a pip install version
 
-  Auto sleep for 5 mins so that can be left running without triggering Bitmex rate limit
+    Auto sleep for 5 mins so that can be left running without triggering Bitmex rate limit
   
-  Add optional authentication to increase rate limit from 150 calls/5min to 300 calls/5min
+    Add optional authentication to increase rate limit from 150 calls/5min to 300 calls/5min
 
-  Create a script be suitable to run as a cronjob every day/ week to keep your historical data up to date automatically
+    Create a script be suitable to run as a cronjob every day/ week to keep your historical data up to date automatically
  
  
 Current Version:
@@ -58,6 +58,8 @@ df = bdh.make_150_api_update_calls(df)
 Please note: This function actually makes 148 calls so that you don't accidentally max out if using directly after the abse sheet.
 
 This updates only 148 x 750 rows (so 111000 minutes (78 days) if on 1m resolution, or 555000 minutes (1 year) on 5m resolution etc).
+
+The fucntion will automatically detect the coinpair and the resolution of your previous sheet (remember it must be the bitmex api format).
 
 YOU MUST WAIT 5 MINUTES BEFORE RUNNING AGAIN or you will trigger an IP ban from bitmex as they rate-limit to 150 requests/5 min. You may use a sleep loop using the time module.
 
