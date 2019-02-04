@@ -1,3 +1,8 @@
+# Assumes you have a data source with the format: ['2018-12-01 01:40:00', 3973.0, 3973.0, 3964.0, 3969.5, 0.1832809890901666]
+
+# Assumes you have use pd.shift(1) on the stddev score so that you are not reading the future.
+
+
 # Constants:
 
 stop_limit_long = 0.998
@@ -60,13 +65,14 @@ def open_positions(row):
 
     entry_price = row[1]
 
-    sl_long = entry_price * stop_limit_long   # Round this later
+    sl_long = round( (entry_price * stop_limit_long) * 2.0) / 2.0   
 
-    tp_long = entry_price * take_profit_long
+    tp_long = round(entry_price * take_profit_long) *2.0 / 2.0
 
-    sl_short = entry_price * stop_limit_short
+    sl_short = round(entry_price * stop_limit_short) * 2.0 / 2.0
 
-    tp_short = entry_price * take_profit_short
+    tp_short = round(entry_price * take_profit_short) * 2.0 /2.0
+    
     
     
     long_position = LongPosition('yes', entry_price, tp_long, sl_long)
