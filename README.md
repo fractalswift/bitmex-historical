@@ -56,6 +56,7 @@ Current Version:
 
     df = bdh.make_150_api_update_calls(df)
 
+    Important: if timestamp object is a string, it won't work. It needs to be a datetime object. If you have imported from csv you will need to convert this first
     Please note: This function actually makes 148 calls so that you don't accidentally max out if using directly after the abse sheet.
 
     This updates only 148 x 750 rows (so 111000 minutes (78 days) if on 1m resolution, or 555000 minutes (1 year) on 5m resolution etc).
