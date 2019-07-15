@@ -1,20 +1,7 @@
 # bitmex-historical
-Python module for automatically downloading historical data from bitmex
 
-Scroll down for current features and usage instructions
+Simple Python script for automatically downloading historical data from bitmex
 
-Future versions to include:
-  
-    Make a pip install version
-
-    Auto sleep for 5 mins so that can be left running without triggering Bitmex rate limit
-  
-    Add optional authentication to increase rate limit from 150 calls/5min to 300 calls/5min
-
-    Create a script be suitable to run as a cronjob every day/ week to keep your historical data up to date automatically
- 
- 
-Current Version:
 
   Bitmex_history_downloader is a simple module for downloading any historical trades on the Bitmex API. It does not require authentication. It has been designed to be easy to use in Jupyter notebook, Spyder, etc.
   
@@ -23,7 +10,8 @@ Current Version:
     
  Dependencies:
  
-      Requires the following packages: requests, pandas, numpy, bitmex, datetime (including timedelta).
+      Requires the following packages: requests, pandas, numpy, bitmex, datetime (including timedelta), time.
+      All of the above modules can be installed with pip
       
  
  Usage:
@@ -43,9 +31,15 @@ Current Version:
 
     Example:
 
+    import bitmex_history_downloader as bhd
+  
     df = bhd.make_base_sheet('ETHUSD', '1m', '2018-12-01 00:00:00', '2018-12-30 12:30:00')
 
     Bitmex accepts the follwing resolutions: '1m', '5m' '1h', '1d'
+    
+    Bitmex accepts the following coinpairs: '.BEOSXBT', '.BADAXBT', '.BBCHXBT', 'ETHUSD', '.BLTCXBT', '.TRXXBT', '.BXRPXBT', 'XBTUSD'
+    
+    Please note the altcoins ending in XBT (e.g .BADAXBT) represent the index, not the historical trades. If you wish to get the historical trades you must replace them with the contract you with, e.g ADAU18. Please remember to use the correct start and end period as these contracts have a start and expirey date.
 
     If you already have some bitmex historical data (it must be saved in bitmex format) e.g you haved used bitmex_history_downloader before and saved the results to csv, you can just import from your csv:
 
@@ -57,11 +51,11 @@ Current Version:
     df = bdh.make_150_api_update_calls(df)
 
     Important: if timestamp object is a string, it won't work. It needs to be a datetime object. If you have imported from csv you will need to convert this first
-    Please note: This function actually makes 148 calls so that you don't accidentally max out if using directly after the abse sheet.
+    Please note: This function actually makes 148 calls so that you don't accidentally max out if using directly after the base sheet.
 
     This updates only 148 x 750 rows (so 111000 minutes (78 days) if on 1m resolution, or 555000 minutes (1 year) on 5m resolution etc).
 
-    The fucntion will automatically detect the coinpair and the resolution of your previous sheet (remember it must be the bitmex api format).
+    The function will automatically detect the coinpair and the resolution of your previous sheet (remember it must be the bitmex api format).
 
     YOU MUST WAIT 5 MINUTES BEFORE RUNNING AGAIN or you will trigger an IP ban from bitmex as they rate-limit to 150 requests/5 min. You may use a sleep loop using the time module.
 
@@ -73,4 +67,3 @@ Current Version:
     If you do this step then you can update your data whenever you want, just go back to step 2 with this data. 
 
     
-  
