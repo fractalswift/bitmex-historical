@@ -68,5 +68,5 @@ YOU MUST WAIT 5 MINUTES BEFORE RUNNING AGAIN or you will trigger an IP ban from 
 
 If you do this step then you can update your data whenever you want, just go back to step 2 with this data. 
 
-AUTOMATED SOLUTION: If you want to download a lot of data and do not want to wait around in front of your computer, please run automatic_bhd.py from command line.
+AUTOMATED SOLUTION: If you want to download a lot of data and do not want to wait around in front of your computer, please run automatic_bhd.py from command line. You will need to make sure you have the "base sheets" (see above) already in your workspace so that they can be appended to by the script.
     
