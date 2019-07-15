@@ -3,7 +3,7 @@
 Simple Python script for automatically downloading historical data from bitmex
 
 
-Bitmex_history_downloader is a simple module for downloading any historical trades on the Bitmex API. It does not require authentication. It can be used easily in Jupyter notebook.
+Bitmex_history_downloader is a simple mini module for downloading any historical trades on the Bitmex API. It does not require authentication. It can be used easily in Jupyter notebook.
   
 Installation:
     The module is not available on pip. Simply cut and paste the code from the repository to your workspace and name it bitmex_history_downloader.py
